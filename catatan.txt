@@ -1,0 +1,1 @@
+1. tambah fitur "seek" inventory berdasarkan tanggal hari ini dan kemarin

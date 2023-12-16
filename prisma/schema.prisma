@@ -1,0 +1,174 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+// modeling database aplikasi inventory dengan fitur kasir
+model User {
+  id         String    @id @default(cuid())
+  fullname   String
+  role       roleUser  @default(Karyawan)
+  karyawanId String    @unique
+  image      String?
+  password   String
+  booth      booth[]
+  laporan    Laporan[]
+  order      Order[]
+  sessions   Session[]
+  accounts   Account[]
+
+  createdAt String
+  updatedAt String
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String   @unique
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @unique
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+enum roleUser {
+  Karyawan
+  Freelance
+  Owner
+}
+
+// model teh solo
+model Product {
+  id           String         @id @default(cuid())
+  size         sizeProduct    @default(Kecil)
+  variant      variantProduct @default(Original)
+  price        Decimal
+  productImage String?
+  booth        booth[]
+  orderedItem  orderItem[]
+  createdAt    String
+  updatedAt    String
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  orderNumber   Int
+  status        statusOrder @default(proses)
+  quantityTotal Int
+  priceTotal    Int
+  orderedItem   orderItem[]
+  boothId       String
+  booth         booth[]
+  operator      User[]
+
+  createdAt String
+  updatedAt String
+}
+
+model orderItem {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product? @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  quantity   Int
+  totalPrice Int
+  catatan    String?
+  orderId    String
+  orders     Order[]
+
+  createdAt String
+  updatedAt String
+
+  @@index([productId])
+}
+
+enum statusOrder {
+  batal
+  proses
+  selesai
+}
+
+model booth {
+  id       String    @id @default(cuid())
+  location String    @unique
+  stok     Stok[]
+  laporan  Laporan[]
+  products Product[]
+  orderan  Order[]
+  user     User[]
+
+  createdAt String
+  updatedAt String
+}
+
+model Stok {
+  id             String    @id @default(uuid())
+  gula_pasir     Int // pack / 1 kg
+  cup_kecil      Int // pcs
+  cup_besar      Int // pcs
+  sedotan        Int // pack
+  es_batu        Int // ball
+  lemon          Int // pcs
+  jeruk_nipis    Int // pcs
+  plastik_kecil  Int // pack
+  plastik_sedang Int // pack
+  plastik_besar  Int // pack
+  boothId        String    @unique
+  booth          booth[]
+
+  createdAt String
+  updatedAt String
+}
+
+enum sizeProduct {
+  Kecil
+  Besar
+}
+
+enum variantProduct {
+  Original // terdapat 2 ukuran kecil harganya 3000, ukurang besar harganya 4000
+  Jeruk_Nipis // hanya ada ukuran besar, harganya 5000
+  Lemon // hanya ada ukuran besar, harganya 6000
+}
+
+enum cupSize {
+  Kecil
+  Besar
+}
+
+model Laporan {
+  id            String  @id @default(cuid())
+  userId        String  @unique
+  user          User?   @relation(fields: [userId], references: [id])
+  date_laporan  String
+  note_khusus   String?
+  daily_revenue Int
+  boothid       String @unique
+  booth         booth?  @relation(fields: [boothid], references: [id])
+  createdAt String
+  updatedAt String
+}
