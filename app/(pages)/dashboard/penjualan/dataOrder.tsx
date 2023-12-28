@@ -38,7 +38,6 @@ export const DataOrder = () => {
 
     const selectedDate = (date: any) => {
         setDate(date.toString())
-        console.log(date)
     }
 
     return (

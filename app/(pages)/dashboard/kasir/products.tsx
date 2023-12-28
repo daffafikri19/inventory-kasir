@@ -49,7 +49,7 @@ export const ProductList = ({ fullname, karyawanId, role, image, location } : se
     useEffect(() => {
         const fetchProducts = async () => {
             setLoading(true)
-            await axios.get('/api/product').then(response => {
+            await axios.get('/api/product/get').then(response => {
                 setProducts(response.data)
                 setLoading(false)
                 return response.data

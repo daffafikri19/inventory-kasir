@@ -1,11 +1,16 @@
 export interface boothProps {
     id: string,
     location: string,
-    stok: StokType,
+    stok: [],
     laporan: [],
-    products: ProductType,
-    orderan: OrderType,
-    user: sessionProps,
+    orderan: [],
+    user: [
+        {
+            fullname: string,
+            role: string,
+            karyawanId: string
+        }
+    ],
     createdAt: string,
     updatedAt: string
 }
@@ -112,7 +117,7 @@ export interface reportOrdersProps {
             location: string
         }
     ],
-    operator : [
+    operator: [
         {
             id: string,
             fullname: string,

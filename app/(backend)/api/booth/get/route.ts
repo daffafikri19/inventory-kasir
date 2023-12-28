@@ -6,11 +6,28 @@ export async function GET() {
         const booths = await prisma.booth.findMany({
             include: {
                 _count: true,
-                laporan: true,
-                orderan: true,
-                products: true,
-                stok: true,
-                user: true
+                orderan: {
+                    include: {
+                        _count: true
+                    }
+                },
+                products: {
+                    include: {
+                        _count: true,
+                        orderedItem: true
+                    }
+                },
+                stok: {
+                    include: {
+                        _count: true,
+                    }
+                },
+                user: {
+                    include: {
+                        _count: true,
+                        laporan: true,
+                    },
+                }
             }
         });
 

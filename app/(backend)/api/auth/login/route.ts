@@ -11,9 +11,9 @@ export async function POST(req: NextRequest) {
         where: {
             karyawanId: karyawanId
         },
-        include: {
-            booth: true,
-        }
+       include: {
+        booth: true
+       } 
     });
 
     if(!password) return NextResponse.json('harap masukan password', {
