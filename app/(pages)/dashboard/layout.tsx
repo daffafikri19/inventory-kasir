@@ -6,14 +6,20 @@ import Breadcrumb from "@/components/global/Breadcrumbs/Breadcrumb";
 import { Toaster } from "@/components/ui/toaster";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Inventory Kasir by Teh Solo",
+  description: "This is Home Blog page for TailAdmin Next.js",
+  // other metadata
+};
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   const session = await getServerSession(authOptions);
-  const now = new Date(Date.now()).toLocaleString();
-  console.log("date now", now)
+
   return (
-      <div suppressHydrationWarning>
+      <div>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
